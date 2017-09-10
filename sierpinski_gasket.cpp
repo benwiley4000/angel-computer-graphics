@@ -15,13 +15,12 @@ int main()
   points[0] = point2(0.25, 0.50);
 
   // add NumPoints - 1 new points
-
-  for (int k = 0; k < NumPoints; k++) {
+  for (int k = 1; k < NumPoints; k++) {
     // pick vertex at random
-    int j = rand() % 3;
+    point2 vertex = vertices[rand() % 3];
 
     // Compute halfway point between selected vertex and last point
-    points[k] = (points[k-1] + vertices[j]) / 2.0;
+    points[k] = (points[k - 1] + vertex) / 2.0;
     std::cout << points[k] << std::endl;
   }
 }
