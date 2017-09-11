@@ -1,5 +1,4 @@
 #include "angel/Angel.h"
-#include <stdlib.h>
 
 typedef vec2 point2;
 
