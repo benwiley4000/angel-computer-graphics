@@ -1,10 +1,32 @@
 #include "angel/Angel.h"
+#include "InitShader.cpp"
+#include <string>
 
 typedef vec2 point2;
 
-int main()
+void init();
+void display();
+
+const int NumPoints = 5000;
+
+int main(int argc, char **argv)
 {
-  const int NumPoints = 5000;
+  glutInit(&argc, argv);
+  glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB);
+  glutInitWindowSize(512, 512);
+  glutInitWindowPosition(50, 50);
+  glutCreateWindow("Sierpinski Gasket");
+  #ifndef __APPLE__
+  glewInit();
+  #endif
+  init();
+  glutDisplayFunc(display);
+  glutMainLoop();
+  return 0;
+}
+
+void init()
+{
   point2 points[NumPoints];
 
   // triangle in plane z = 0
@@ -20,6 +42,32 @@ int main()
 
     // Compute halfway point between selected vertex and last point
     points[k] = (points[k - 1] + vertex) / 2.0;
-    std::cout << points[k] << std::endl;
   }
+
+  GLuint program = InitShader("sierpinski_gasket_vertex.glsl",
+                              "sierpinski_gasket_fragment.glsl");
+  glUseProgram(program);
+
+  GLuint abuffer;
+
+  glGenVertexArraysAPPLE(1, &abuffer);
+  glBindVertexArrayAPPLE(abuffer);
+
+  GLuint buffer;
+  glGenBuffers(1, &buffer);
+  glBindBuffer(GL_ARRAY_BUFFER, buffer);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
+
+  GLuint loc = glGetAttribLocation(program, "vPosition");
+  glEnableVertexAttribArray(loc);
+  glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+
+  glClearColor(1.0, 1.0, 1.0, 1.0); // white background
+}
+
+void display()
+{
+  glClear(GL_COLOR_BUFFER_BIT);
+  glDrawArrays(GL_POINTS, 0, NumPoints);
+  glFlush();
 }
