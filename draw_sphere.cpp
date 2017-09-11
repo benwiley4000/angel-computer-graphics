@@ -27,4 +27,34 @@ int main()
       k++;
     }
   }
+
+  k = 0;
+  point3 strip_data[40];
+
+  strip_data[k] = point3(0.0, 0.0, 1.0);
+  k++;
+
+  float sin80 = sin(80.0 * DegreesToRadians);
+  float cos80 = cos(80.0 * DegreesToRadians);
+
+  for (float theta = -180; theta <= 180.0; theta += 20.0) {
+    float thetar = theta * DegreesToRadians;
+    strip_data[k] = point3(sin(thetar) * cos80,
+                           cos(thetar) * cos80,
+                           sin80);
+    std::cout << strip_data[k] << std::endl;
+    k++;
+  }
+
+  strip_data[k] = point3(0.0, 0.0, -1.0);
+  k++;
+
+  for (float theta = -180; theta <= 180.0; theta += 20.0) {
+    float thetar = theta * DegreesToRadians;
+    strip_data[k] = point3(sin(thetar) * cos80,
+                           cos(thetar) * cos80,
+                           sin80);
+    std::cout << strip_data[k] << std::endl;
+    k++;
+  }
 }
