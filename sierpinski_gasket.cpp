@@ -50,8 +50,8 @@ void init()
 
   GLuint abuffer;
 
-  glGenVertexArraysAPPLE(1, &abuffer);
-  glBindVertexArrayAPPLE(abuffer);
+  glGenVertexArrays(1, &abuffer);
+  glBindVertexArray(abuffer);
 
   GLuint buffer;
   glGenBuffers(1, &buffer);

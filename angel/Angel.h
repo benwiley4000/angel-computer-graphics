@@ -6,6 +6,8 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
+// Some modifications for system compatibility made by Ben Wiley 2017
+
 #ifndef __ANGEL_H__
 #define __ANGEL_H__
 
@@ -34,6 +36,7 @@
 #ifdef __APPLE__  // include Mac OS X versions of headers
 #  include <OpenGL/gl3.h>
 #  include <OpenGL/gl3ext.h>
+#  define __gl_h_ // don't include gl.h: https://stackoverflow.com/a/24098402
 #  include <GLUT/glut.h>
 #else // non-Mac OS X operating systems
 #  include <GL/glew.h>
