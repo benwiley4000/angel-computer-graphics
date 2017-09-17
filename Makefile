@@ -8,7 +8,7 @@ endif
 COMPILER_FLAGS=-Wno-deprecated-declarations
 MKDIR_P = mkdir -p
 
-all: dirs sierpinski_gasket draw_sphere
+all: dirs copy_shaders sierpinski_gasket draw_sphere
 
 sierpinski_gasket: sierpinski_gasket.cpp
 	$(CC) $< -o bin/$@ $(LIBS) $(COMPILER_FLAGS)
@@ -18,3 +18,9 @@ draw_sphere: draw_sphere.cpp
 
 dirs:
 	${MKDIR_P} bin/
+
+copy_shaders:
+	cp ./*.glsl bin/
+
+clean:
+	rm -f bin/*
