@@ -31,8 +31,9 @@
 //     this this "include" directory.
 //
 
-#ifdef __APPLE__  // include Mac OS X verions of headers
-#  include <OpenGL/OpenGL.h>
+#ifdef __APPLE__  // include Mac OS X versions of headers
+#  include <OpenGL/gl3.h>
+#  include <OpenGL/gl3ext.h>
 #  include <GLUT/glut.h>
 #else // non-Mac OS X operating systems
 #  include <GL/glew.h>
