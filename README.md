@@ -16,7 +16,9 @@ You should already have the required frameworks for building.
 
 ### linux
 
-You'll need to install freeglut and glew. For freeglut, if you're on Debian/Ubuntu, you can try:
+You'll need to install freeglut and glew.
+
+For freeglut, if you're on Debian/Ubuntu, you can try:
 
 ```bash
 sudo apt-get update
