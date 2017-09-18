@@ -2,7 +2,7 @@
 #include "InitShader.cpp"
 #include <string>
 
-typedef vec2 point2;
+typedef vec3 point3;
 
 void init();
 void display();
@@ -27,18 +27,20 @@ int main(int argc, char **argv)
 
 void init()
 {
-  point2 points[NumPoints];
+  point3 points[NumPoints];
 
-  // triangle in plane z = 0
-  point2 vertices[3] = {point2(-1.0,-1.0), point2(0.0,1.0), point2(1.0,-1.0)};
+  point3 vertices[4] = { point3(-1.0,  -1.0, -1.0),
+                         point3( 1.0,  -1.0, -1.0),
+                         point3( 0.0,   1.0, -1.0),
+                         point3( 0.0,   0.0,  1.0) };
 
   // arbitrary initial point
-  points[0] = point2(0.25, 0.50);
+  points[0] = point3(0.0, 0.0, 0.0);
 
   // add NumPoints - 1 new points
   for (int k = 1; k < NumPoints; k++) {
     // pick vertex at random
-    point2 vertex = vertices[rand() % 3];
+    point3 vertex = vertices[rand() % 4];
 
     // Compute halfway point between selected vertex and last point
     points[k] = (points[k - 1] + vertex) / 2.0;
@@ -60,7 +62,7 @@ void init()
 
   GLuint loc = glGetAttribLocation(program, "vPosition");
   glEnableVertexAttribArray(loc);
-  glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+  glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 
   glClearColor(1.0, 1.0, 1.0, 1.0); // white background
 }
