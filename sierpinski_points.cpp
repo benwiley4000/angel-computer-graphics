@@ -1,20 +1,13 @@
 #include "angel/Angel.h"
 #include "InitShader.cpp"
 #include <string>
-#include <cmath>
 
 typedef vec2 point2;
 
 void init();
 void display();
-void triangle(point2 a, point2 b, point2 c);
-void divide_triangle(point2 a, point2 b, point2 c, int k);
 
-const int NumSubdivisions = 6;
-const int NumTriangles = pow(3, NumSubdivisions);
-const int NumVertices = 3 * NumTriangles;
-
-point2 points[NumVertices];
+const int NumPoints = 5000;
 
 int main(int argc, char **argv)
 {
@@ -34,13 +27,25 @@ int main(int argc, char **argv)
 
 void init()
 {
+  point2 points[NumPoints];
+
   // triangle in plane z = 0
   point2 vertices[3] = {point2(-1.0,-1.0), point2(0.0,1.0), point2(1.0,-1.0)};
 
-  divide_triangle(vertices[0], vertices[1], vertices[2], NumSubdivisions);
+  // arbitrary initial point
+  points[0] = point2(0.25, 0.50);
 
-  GLuint program = InitShader("sierpinski_gasket_vertex.glsl",
-                              "sierpinski_gasket_fragment.glsl");
+  // add NumPoints - 1 new points
+  for (int k = 1; k < NumPoints; k++) {
+    // pick vertex at random
+    point2 vertex = vertices[rand() % 3];
+
+    // Compute halfway point between selected vertex and last point
+    points[k] = (points[k - 1] + vertex) / 2.0;
+  }
+
+  GLuint program = InitShader("sierpinski_vertex.glsl",
+                              "sierpinski_fragment.glsl");
   glUseProgram(program);
 
   GLuint abuffer;
@@ -60,35 +65,9 @@ void init()
   glClearColor(1.0, 1.0, 1.0, 1.0); // white background
 }
 
-void triangle(point2 a, point2 b, point2 c)
-{
-  static int i = 0;
-  points[i++] = a;
-  points[i++] = b;
-  points[i++] = c;
-}
-
-// recursively subdivide triangle areas until k is down
-// to 0, and then draw the triangles
-void divide_triangle(point2 a, point2 b, point2 c, int k)
-{
-  if (k == 0) {
-    triangle(a,b,c);
-    return;
-  }
-  // compute midpoints of sides
-  point2 ab = (a + b) / 2.0;
-  point2 ac = (a + c) / 2.0;
-  point2 bc = (b + c) / 2.0;
-  // subdivide all but inner triangle
-  divide_triangle(a, ab, ac, k - 1);
-  divide_triangle(c, ac, bc, k - 1);
-  divide_triangle(b, bc, ab, k - 1);
-}
-
 void display()
 {
   glClear(GL_COLOR_BUFFER_BIT);
-  glDrawArrays(GL_TRIANGLES, 0, NumVertices);
+  glDrawArrays(GL_POINTS, 0, NumPoints);
   glFlush();
 }
