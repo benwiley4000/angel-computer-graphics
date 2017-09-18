@@ -7,7 +7,7 @@ typedef vec3 point3;
 void init();
 void display();
 
-const int NumPoints = 5000;
+const int NumPoints = 50000;
 
 int main(int argc, char **argv)
 {
