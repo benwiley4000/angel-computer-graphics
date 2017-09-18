@@ -12,9 +12,14 @@ void triangle(point3 a, point3 b, point3 c);
 void tetra(point3 a, point3 b, point3 c, point3 d);
 void divide_tetra(point3 a, point3 b, point3 c, point3 d, int k);
 
-
-color3 base_colors[4] = {color3(1.0, 0.0, 0.0), color3(0.0, 1.0, 0.0),
-                         color3(0.0, 0.0, 1.0), color3(0.0, 0.0, 0.0)};
+const float c_range = 255.0;
+// PICO-8 PALETTE: https://www.romanzolotarev.com/pico-8-color-palette/
+color3 base_colors[4] =
+  { color3(29 / c_range,  43 / c_range,  83 / c_range),  // DARK-BLUE
+    color3(126 / c_range, 37 / c_range,  83 / c_range),  // DARK-PURPLE
+    color3(41 / c_range,  173 / c_range, 255 / c_range), // BLUE
+    color3(0.0,           0.0,           0.0)            // BLACK
+  };
 
 const int NumSubdivisions = 3;
 const int NumTetrahedrons = pow(4, NumSubdivisions);
