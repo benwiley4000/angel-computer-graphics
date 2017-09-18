@@ -46,7 +46,7 @@ void init()
     points[k] = (points[k - 1] + vertex) / 2.0;
   }
 
-  GLuint program = InitShader("sierpinski_vertex.glsl",
+  GLuint program = InitShader("sierpinski_vertex_points.glsl",
                               "sierpinski_fragment.glsl");
   glUseProgram(program);
 

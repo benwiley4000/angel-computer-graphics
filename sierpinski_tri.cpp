@@ -4,6 +4,7 @@
 #include <cmath>
 
 typedef vec3 point3;
+typedef vec3 color3;
 
 void init();
 void display();
@@ -11,17 +12,22 @@ void triangle(point3 a, point3 b, point3 c);
 void tetra(point3 a, point3 b, point3 c, point3 d);
 void divide_tetra(point3 a, point3 b, point3 c, point3 d, int k);
 
-const int NumSubdivisions = 6;
+
+color3 base_colors[4] = {color3(1.0, 0.0, 0.0), color3(0.0, 1.0, 0.0),
+                         color3(0.0, 0.0, 1.0), color3(0.0, 0.0, 0.0)};
+
+const int NumSubdivisions = 3;
 const int NumTetrahedrons = pow(4, NumSubdivisions);
 const int NumTriangles = 4 * NumTetrahedrons;
 const int NumVertices = 3 * NumTriangles;
 
 point3 points[NumVertices];
+color3 colors[NumVertices];
 
 int main(int argc, char **argv)
 {
   glutInit(&argc, argv);
-  glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB);
+  glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
   glutInitWindowSize(512, 512);
   glutInitWindowPosition(50, 50);
   glutCreateWindow("Sierpinski Gasket");
@@ -36,14 +42,14 @@ int main(int argc, char **argv)
 
 void init()
 {
-  point3 vertices[4] = { point3(-1.0,  -1.0, -1.0),
-                         point3( 1.0,  -1.0, -1.0),
-                         point3( 0.0,   1.0, -1.0),
-                         point3( 0.0,   0.0,  1.0) };
+  point3 vertices[4] = { point3( 0.0, 0.0, -1.0 ),
+                         point3( 0.0, 0.942809, 0.333333 ),
+                         point3( -0.816497, -0.471405, 0.333333 ),
+                         point3( 0.816497, -0.471405, 0.333333 ) };
 
   divide_tetra(vertices[0], vertices[1], vertices[2], vertices[3], NumSubdivisions);
 
-  GLuint program = InitShader("sierpinski_vertex.glsl",
+  GLuint program = InitShader("sierpinski_vertex_tri.glsl",
                               "sierpinski_fragment.glsl");
   glUseProgram(program);
 
@@ -55,28 +61,50 @@ void init()
   GLuint buffer;
   glGenBuffers(1, &buffer);
   glBindBuffer(GL_ARRAY_BUFFER, buffer);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(points) + sizeof(colors), NULL, GL_STATIC_DRAW);
+
+  glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(points), points);
+  glBufferSubData(GL_ARRAY_BUFFER, sizeof(points), sizeof(colors), colors);
 
   GLuint loc = glGetAttribLocation(program, "vPosition");
   glEnableVertexAttribArray(loc);
   glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 
+  GLuint loc2 = glGetAttribLocation(program, "vColor");
+  glEnableVertexAttribArray(loc2);
+  glVertexAttribPointer(loc2, 3, GL_FLOAT, GL_FALSE, 0,
+                        BUFFER_OFFSET(sizeof(points)));
+
+  glEnable(GL_DEPTH_TEST);
+
   glClearColor(1.0, 1.0, 1.0, 1.0); // white background
 }
+
+int colorindex;
 
 void triangle(point3 a, point3 b, point3 c)
 {
   static int i = 0;
-  points[i++] = a;
-  points[i++] = b;
-  points[i++] = c;
+  points[i] = a;
+  colors[i] = base_colors[colorindex];
+  i++;
+  points[i] = b;
+  colors[i] = base_colors[colorindex];
+  i++;
+  points[i] = c;
+  colors[i] = base_colors[colorindex];
+  i++;
 }
 
 void tetra(point3 a, point3 b, point3 c, point3 d)
 {
+  colorindex = 0;
   triangle(a, b, c);
+  colorindex = 1;
   triangle(a, c, d);
+  colorindex = 2;
   triangle(a, d, b);
+  colorindex = 3;
   triangle(b, d, c);
 }
 
@@ -105,7 +133,7 @@ void divide_tetra(point3 a, point3 b, point3 c, point3 d, int k)
 
 void display()
 {
-  glClear(GL_COLOR_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glDrawArrays(GL_TRIANGLES, 0, NumVertices);
   glFlush();
 }
