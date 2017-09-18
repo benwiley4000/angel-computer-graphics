@@ -3,18 +3,20 @@
 #include <string>
 #include <cmath>
 
-typedef vec2 point2;
+typedef vec3 point3;
 
 void init();
 void display();
-void triangle(point2 a, point2 b, point2 c);
-void divide_triangle(point2 a, point2 b, point2 c, int k);
+void triangle(point3 a, point3 b, point3 c);
+void tetra(point3 a, point3 b, point3 c, point3 d);
+void divide_tetra(point3 a, point3 b, point3 c, point3 d, int k);
 
 const int NumSubdivisions = 6;
-const int NumTriangles = pow(3, NumSubdivisions);
+const int NumTetrahedrons = pow(4, NumSubdivisions);
+const int NumTriangles = 4 * NumTetrahedrons;
 const int NumVertices = 3 * NumTriangles;
 
-point2 points[NumVertices];
+point3 points[NumVertices];
 
 int main(int argc, char **argv)
 {
@@ -34,10 +36,12 @@ int main(int argc, char **argv)
 
 void init()
 {
-  // triangle in plane z = 0
-  point2 vertices[3] = {point2(-1.0,-1.0), point2(0.0,1.0), point2(1.0,-1.0)};
+  point3 vertices[4] = { point3(-1.0,  -1.0, -1.0),
+                         point3( 1.0,  -1.0, -1.0),
+                         point3( 0.0,   1.0, -1.0),
+                         point3( 0.0,   0.0,  1.0) };
 
-  divide_triangle(vertices[0], vertices[1], vertices[2], NumSubdivisions);
+  divide_tetra(vertices[0], vertices[1], vertices[2], vertices[3], NumSubdivisions);
 
   GLuint program = InitShader("sierpinski_vertex.glsl",
                               "sierpinski_fragment.glsl");
@@ -55,12 +59,12 @@ void init()
 
   GLuint loc = glGetAttribLocation(program, "vPosition");
   glEnableVertexAttribArray(loc);
-  glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+  glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 
   glClearColor(1.0, 1.0, 1.0, 1.0); // white background
 }
 
-void triangle(point2 a, point2 b, point2 c)
+void triangle(point3 a, point3 b, point3 c)
 {
   static int i = 0;
   points[i++] = a;
@@ -68,22 +72,35 @@ void triangle(point2 a, point2 b, point2 c)
   points[i++] = c;
 }
 
-// recursively subdivide triangle areas until k is down
-// to 0, and then draw the triangles
-void divide_triangle(point2 a, point2 b, point2 c, int k)
+void tetra(point3 a, point3 b, point3 c, point3 d)
+{
+  triangle(a, b, c);
+  triangle(a, c, d);
+  triangle(a, d, b);
+  triangle(b, d, c);
+}
+
+// recursively subdivide tetrahedrons until k is down
+// to 0, and then draw the tetrahedrons
+void divide_tetra(point3 a, point3 b, point3 c, point3 d, int k)
 {
   if (k == 0) {
-    triangle(a,b,c);
+    tetra(a, b, c, d);
     return;
   }
+  point3 mid[6];
   // compute midpoints of sides
-  point2 ab = (a + b) / 2.0;
-  point2 ac = (a + c) / 2.0;
-  point2 bc = (b + c) / 2.0;
-  // subdivide all but inner triangle
-  divide_triangle(a, ab, ac, k - 1);
-  divide_triangle(c, ac, bc, k - 1);
-  divide_triangle(b, bc, ab, k - 1);
+  mid[0] = (a + b) / 2.0;
+  mid[1] = (a + c) / 2.0;
+  mid[2] = (a + d) / 2.0;
+  mid[3] = (b + c) / 2.0;
+  mid[4] = (c + d) / 2.0;
+  mid[5] = (b + d) / 2.0;
+  // subdivide all but inner tetrahedron
+  divide_tetra(a, mid[0], mid[1], mid[2], k - 1);
+  divide_tetra(mid[0], b, mid[3], mid[5], k - 1);
+  divide_tetra(mid[1], mid[3], c, mid[4], k - 1);
+  divide_tetra(mid[2], mid[5], mid[5], d, k - 1);
 }
 
 void display()
