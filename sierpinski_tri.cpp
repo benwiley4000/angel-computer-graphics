@@ -128,7 +128,7 @@ void divide_tetra(point3 a, point3 b, point3 c, point3 d, int k)
   divide_tetra(a, mid[0], mid[1], mid[2], k - 1);
   divide_tetra(mid[0], b, mid[3], mid[5], k - 1);
   divide_tetra(mid[1], mid[3], c, mid[4], k - 1);
-  divide_tetra(mid[2], mid[5], mid[5], d, k - 1);
+  divide_tetra(mid[2], mid[4], mid[5], d, k - 1);
 }
 
 void display()
