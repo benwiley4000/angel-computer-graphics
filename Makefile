@@ -8,7 +8,7 @@ endif
 COMPILER_FLAGS=-Wno-deprecated-declarations
 MKDIR_P = mkdir -p
 
-all: dirs copy_shaders sierpinski_points sierpinski_tri draw_sphere
+all: dirs copy_shaders sierpinski_points sierpinski_tri draw_sphere triangle
 
 sierpinski_points: sierpinski_points.cpp
 	$(CC) $< -o bin/$@ $(LIBS) $(COMPILER_FLAGS)
@@ -17,6 +17,9 @@ sierpinski_tri: sierpinski_tri.cpp
 	$(CC) $< -o bin/$@ $(LIBS) $(COMPILER_FLAGS)
 
 draw_sphere: draw_sphere.cpp
+	$(CC) $< -o bin/$@ $(LIBS) $(COMPILER_FLAGS)
+
+triangle: triangle.cpp
 	$(CC) $< -o bin/$@ $(LIBS) $(COMPILER_FLAGS)
 
 dirs:
