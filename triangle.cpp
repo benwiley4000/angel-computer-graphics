@@ -8,8 +8,11 @@ void display();
 void mouse(int button, int state, int x, int y);
 void reshape(GLsizei w, GLsizei h);
 void keyboard(unsigned char key, int x, int y);
+void idle();
 
+const float Angle = 0.001 * DegreesToRadians;
 const int NumVertices = 3;
+
 point2 points[NumVertices];
 
 int w = 512;
@@ -32,6 +35,7 @@ int main(int argc, char **argv)
   glutMouseFunc(mouse);
   glutReshapeFunc(reshape);
   glutKeyboardFunc(keyboard);
+  glutIdleFunc(idle);
   glutMainLoop();
   return 0;
 }
@@ -100,4 +104,13 @@ void keyboard(unsigned char key, int x, int y)
   if (key == 'q' || key == 'Q') {
     exit(0);
   }
+}
+
+void idle()
+{
+  for(int i = 0; i < 3; i++) {
+    points[i].x = cos(Angle) * points[i].x - sin(Angle) * points[i].y;
+    points[i].y = sin(Angle) * points[i].x + cos(Angle) * points[i].y;
+  }
+  glutPostRedisplay();
 }
