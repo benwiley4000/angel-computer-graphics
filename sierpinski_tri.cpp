@@ -23,7 +23,7 @@ color3 base_colors[4] =
     color3(0.0,           0.0,           0.0)            // BLACK
   };
 
-const float Angle = 0.001 * DegreesToRadians;
+const float Angle = 0.01 * DegreesToRadians;
 
 const int NumSubdivisions = 3;
 const int NumTetrahedrons = pow(4, NumSubdivisions);
