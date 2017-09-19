@@ -12,6 +12,7 @@ void mouse(int button, int state, int x, int y);
 void triangle(point3 a, point3 b, point3 c);
 void tetra(point3 a, point3 b, point3 c, point3 d);
 void divide_tetra(point3 a, point3 b, point3 c, point3 d, int k);
+void idle();
 
 const float c_range = 255.0;
 // PICO-8 PALETTE: https://www.romanzolotarev.com/pico-8-color-palette/
@@ -21,6 +22,8 @@ color3 base_colors[4] =
     color3(41 / c_range,  173 / c_range, 255 / c_range), // BLUE
     color3(0.0,           0.0,           0.0)            // BLACK
   };
+
+const float Angle = 0.001 * DegreesToRadians;
 
 const int NumSubdivisions = 3;
 const int NumTetrahedrons = pow(4, NumSubdivisions);
@@ -43,9 +46,12 @@ int main(int argc, char **argv)
   init();
   glutDisplayFunc(display);
   glutMouseFunc(mouse);
+  glutIdleFunc(idle);
   glutMainLoop();
   return 0;
 }
+
+GLuint program, loc, loc2;
 
 void init()
 {
@@ -56,7 +62,7 @@ void init()
 
   divide_tetra(vertices[0], vertices[1], vertices[2], vertices[3], NumSubdivisions);
 
-  GLuint program = InitShader("sierpinski_vertex_tri.glsl",
+  program = InitShader("sierpinski_vertex_tri.glsl",
                               "sierpinski_fragment.glsl");
   glUseProgram(program);
 
@@ -73,11 +79,11 @@ void init()
   glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(points), points);
   glBufferSubData(GL_ARRAY_BUFFER, sizeof(points), sizeof(colors), colors);
 
-  GLuint loc = glGetAttribLocation(program, "vPosition");
+  loc = glGetAttribLocation(program, "vPosition");
   glEnableVertexAttribArray(loc);
   glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 
-  GLuint loc2 = glGetAttribLocation(program, "vColor");
+  loc2 = glGetAttribLocation(program, "vColor");
   glEnableVertexAttribArray(loc2);
   glVertexAttribPointer(loc2, 3, GL_FLOAT, GL_FALSE, 0,
                         BUFFER_OFFSET(sizeof(points)));
@@ -141,6 +147,20 @@ void divide_tetra(point3 a, point3 b, point3 c, point3 d, int k)
 void display()
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(points) + sizeof(colors), NULL, GL_STATIC_DRAW);
+
+  glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(points), points);
+  glBufferSubData(GL_ARRAY_BUFFER, sizeof(points), sizeof(colors), colors);
+
+  loc = glGetAttribLocation(program, "vPosition");
+  glEnableVertexAttribArray(loc);
+  glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+
+  loc2 = glGetAttribLocation(program, "vColor");
+  glEnableVertexAttribArray(loc2);
+  glVertexAttribPointer(loc2, 3, GL_FLOAT, GL_FALSE, 0,
+                        BUFFER_OFFSET(sizeof(points)));
+
   glDrawArrays(GL_TRIANGLES, 0, NumVertices);
   glFlush();
 }
@@ -150,4 +170,14 @@ void mouse(int button, int state, int x, int y)
   if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
     exit(0);
   }
+}
+
+void idle()
+{
+  // rotate around x axis
+  for(int i = 0; i < NumVertices; i++) {
+    points[i].y = cos(Angle) * points[i].y - sin(Angle) * points[i].z;
+    points[i].z = sin(Angle) * points[i].y + cos(Angle) * points[i].z;
+  }
+  glutPostRedisplay();
 }
