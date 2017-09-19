@@ -6,12 +6,14 @@ typedef vec2 point2;
 void init();
 void display();
 void mouse(int button, int state, int x, int y);
+void reshape(GLsizei w, GLsizei h);
+void keyboard(unsigned char key, int x, int y);
 
 const int NumVertices = 3;
 point2 points[NumVertices];
 
-const int w = 512;
-const int h = 512;
+int w = 512;
+int h = 512;
 
 GLuint program, loc;
 
@@ -28,6 +30,8 @@ int main(int argc, char **argv)
   init();
   glutDisplayFunc(display);
   glutMouseFunc(mouse);
+  glutReshapeFunc(reshape);
+  glutKeyboardFunc(keyboard);
   glutMainLoop();
   return 0;
 }
@@ -81,5 +85,19 @@ void mouse(int button, int state, int x, int y)
   if(count == 3) {
     glutPostRedisplay();
     count = 0;
+  }
+}
+
+void reshape(GLsizei _w, GLsizei _h)
+{
+  w = _w;
+  h = _h;
+  glViewport(0, 0, w, h);
+}
+
+void keyboard(unsigned char key, int x, int y)
+{
+  if (key == 'q' || key == 'Q') {
+    exit(0);
   }
 }
