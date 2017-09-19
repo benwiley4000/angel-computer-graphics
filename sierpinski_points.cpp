@@ -31,10 +31,10 @@ void init()
 {
   point3 points[NumPoints];
 
-  point3 vertices[4] = { point3(-1.0,  -1.0, -1.0),
-                         point3( 1.0,  -1.0, -1.0),
-                         point3( 0.0,   1.0, -1.0),
-                         point3( 0.0,   0.0,  1.0) };
+  point3 vertices[4] = { point3( 0.0, 0.0, -1.0 ),
+                         point3( 0.0, 0.942809, 0.333333 ),
+                         point3( -0.816497, -0.471405, 0.333333 ),
+                         point3( 0.816497, -0.471405, 0.333333 ) };
 
   // arbitrary initial point
   points[0] = point3(0.0, 0.0, 0.0);
