@@ -8,6 +8,7 @@ typedef vec3 color3;
 
 void init();
 void display();
+void mouse(int button, int state, int x, int y);
 void triangle(point3 a, point3 b, point3 c);
 void tetra(point3 a, point3 b, point3 c, point3 d);
 void divide_tetra(point3 a, point3 b, point3 c, point3 d, int k);
@@ -41,6 +42,7 @@ int main(int argc, char **argv)
   #endif
   init();
   glutDisplayFunc(display);
+  glutMouseFunc(mouse);
   glutMainLoop();
   return 0;
 }
@@ -141,4 +143,11 @@ void display()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glDrawArrays(GL_TRIANGLES, 0, NumVertices);
   glFlush();
+}
+
+void mouse(int button, int state, int x, int y)
+{
+  if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+    exit(0);
+  }
 }

@@ -6,6 +6,7 @@ typedef vec3 point3;
 
 void init();
 void display();
+void mouse(int button, int state, int x, int y);
 
 const int NumPoints = 50000;
 
@@ -21,6 +22,7 @@ int main(int argc, char **argv)
   #endif
   init();
   glutDisplayFunc(display);
+  glutMouseFunc(mouse);
   glutMainLoop();
   return 0;
 }
@@ -72,4 +74,11 @@ void display()
   glClear(GL_COLOR_BUFFER_BIT);
   glDrawArrays(GL_POINTS, 0, NumPoints);
   glFlush();
+}
+
+void mouse(int button, int state, int x, int y)
+{
+  if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+    exit(0);
+  }
 }
