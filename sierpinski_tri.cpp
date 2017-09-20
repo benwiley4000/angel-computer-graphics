@@ -176,8 +176,10 @@ void idle()
 {
   // rotate around x axis
   for(int i = 0; i < NumVertices; i++) {
-    points[i].y = cos(Angle) * points[i].y - sin(Angle) * points[i].z;
-    points[i].z = sin(Angle) * points[i].y + cos(Angle) * points[i].z;
+    float y = cos(Angle) * points[i].y - sin(Angle) * points[i].z;
+    float z = sin(Angle) * points[i].y + cos(Angle) * points[i].z;
+    points[i].y = y;
+    points[i].z = z;
   }
   glutPostRedisplay();
 }
