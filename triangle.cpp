@@ -9,6 +9,8 @@ void mouse(int button, int state, int x, int y);
 void reshape(GLsizei w, GLsizei h);
 void keyboard(unsigned char key, int x, int y);
 void idle();
+void top_menu(int id);
+void rotation_menu(int id);
 
 const float Angle = 0.05 * DegreesToRadians;
 const int NumVertices = 3;
@@ -36,6 +38,15 @@ int main(int argc, char **argv)
   glutReshapeFunc(reshape);
   glutKeyboardFunc(keyboard);
   glutIdleFunc(idle);
+
+  GLuint sub_menu = glutCreateMenu(rotation_menu);
+  glutAddMenuEntry("start rotation", 2);
+  glutAddMenuEntry("stop rotation", 3);
+  glutCreateMenu(top_menu);
+  glutAddMenuEntry("Quit", 1);
+  glutAddSubMenu("start/stop rotation", sub_menu);
+  glutAttachMenu(GLUT_RIGHT_BUTTON);
+
   glutMainLoop();
   return 0;
 }
@@ -78,9 +89,6 @@ void display()
 void mouse(int button, int state, int x, int y)
 {
   static int count = 0;
-  if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
-    exit(0);
-  }
   if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
     points[count].x = (float) x / (w/2) - 1.0;
     points[count].y = (float) (h-y) / (h/2) - 1.0;
@@ -113,6 +121,33 @@ void idle()
     float y = sin(Angle) * points[i].x + cos(Angle) * points[i].y;
     points[i].x = x;
     points[i].y = y;
+  }
+  glutPostRedisplay();
+}
+
+void top_menu(int id)
+{
+  switch (id) {
+    case 1:
+      exit(0);
+      break;
+    default:
+      break;
+  }
+  glutPostRedisplay();
+}
+
+void rotation_menu(int id)
+{
+  switch (id) {
+    case 2:
+      glutIdleFunc(idle);
+      break;
+    case 3:
+      glutIdleFunc(NULL);
+      break;
+    default:
+      break;
   }
   glutPostRedisplay();
 }
