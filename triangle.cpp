@@ -10,7 +10,7 @@ void reshape(GLsizei w, GLsizei h);
 void keyboard(unsigned char key, int x, int y);
 void idle();
 
-const float Angle = 0.001 * DegreesToRadians;
+const float Angle = 0.05 * DegreesToRadians;
 const int NumVertices = 3;
 
 point2 points[NumVertices];
@@ -23,7 +23,7 @@ GLuint program, loc;
 int main(int argc, char **argv)
 {
   glutInit(&argc, argv);
-  glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB);
+  glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB);
   glutInitWindowSize(w, h);
   glutInitWindowPosition(50, 50);
   glutCreateWindow("Triangle");
@@ -72,7 +72,7 @@ void display()
   glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 
   glDrawArrays(GL_TRIANGLES, 0, NumVertices);
-  glFlush();
+  glutSwapBuffers();
 }
 
 void mouse(int button, int state, int x, int y)
