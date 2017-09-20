@@ -8,7 +8,7 @@ typedef vec3 color3;
 
 void init();
 void display();
-void mouse(int button, int state, int x, int y);
+void keyboard(unsigned char key, int x, int y);
 void triangle(point3 a, point3 b, point3 c);
 void tetra(point3 a, point3 b, point3 c, point3 d);
 void divide_tetra(point3 a, point3 b, point3 c, point3 d, int k);
@@ -45,7 +45,7 @@ int main(int argc, char **argv)
   #endif
   init();
   glutDisplayFunc(display);
-  glutMouseFunc(mouse);
+  glutKeyboardFunc(keyboard);
   glutIdleFunc(idle);
   glutMainLoop();
   return 0;
@@ -165,11 +165,18 @@ void display()
   glutSwapBuffers();
 }
 
-void mouse(int button, int state, int x, int y)
+bool rotating = true;
+void keyboard(unsigned char key, int x, int y)
 {
-  if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-    exit(0);
+  if (key == ' ') {
+    rotating = !rotating;
+    if (rotating) {
+      glutIdleFunc(idle);
+    } else {
+      glutIdleFunc(NULL);
+    }
   }
+  glutPostRedisplay();
 }
 
 void idle()
