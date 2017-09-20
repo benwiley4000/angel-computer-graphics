@@ -23,7 +23,7 @@ color3 base_colors[4] =
     color3(0.0,           0.0,           0.0)            // BLACK
   };
 
-const float Angle = 0.01 * DegreesToRadians;
+const float Angle = 0.3 * DegreesToRadians;
 
 const int NumSubdivisions = 3;
 const int NumTetrahedrons = pow(4, NumSubdivisions);
@@ -36,7 +36,7 @@ color3 colors[NumVertices];
 int main(int argc, char **argv)
 {
   glutInit(&argc, argv);
-  glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
+  glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
   glutInitWindowSize(512, 512);
   glutInitWindowPosition(50, 50);
   glutCreateWindow("Sierpinski Gasket");
@@ -162,7 +162,7 @@ void display()
                         BUFFER_OFFSET(sizeof(points)));
 
   glDrawArrays(GL_TRIANGLES, 0, NumVertices);
-  glFlush();
+  glutSwapBuffers();
 }
 
 void mouse(int button, int state, int x, int y)
