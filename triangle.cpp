@@ -109,8 +109,10 @@ void keyboard(unsigned char key, int x, int y)
 void idle()
 {
   for(int i = 0; i < 3; i++) {
-    points[i].x = cos(Angle) * points[i].x - sin(Angle) * points[i].y;
-    points[i].y = sin(Angle) * points[i].x + cos(Angle) * points[i].y;
+    float x = cos(Angle) * points[i].x - sin(Angle) * points[i].y;
+    float y = sin(Angle) * points[i].x + cos(Angle) * points[i].y;
+    points[i].x = x;
+    points[i].y = y;
   }
   glutPostRedisplay();
 }
